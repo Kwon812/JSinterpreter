@@ -7,11 +7,13 @@ export default class Env{
     #value
     #type
     #params
-    constructor(name,value,type,params){
+    #event
+    constructor(name,value,type,params,event){
         this.#name = name
         this.#value= value
         this.#type = type
         this.#params= params
+        this.#event = event
     }
 
     changeValue(value){
@@ -25,6 +27,9 @@ export default class Env{
         return this.#value
     }
 
+    get event(){
+        return this.#event
+    }
     get type() {
         return this.#type
     }

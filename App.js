@@ -18,8 +18,11 @@ export default class App{
                 new Keyword('Print', 'print'),
                 new Keyword('If', 'if'),
                 new Keyword('Fun', 'func'),
+
                 new Keyword('From', 'from'),
-                new Keyword('For', 'while')
+                new Keyword('For', 'while'),
+                // new Keyword('Fun', 'task'),
+                // new Keyword('Fun', 'micro'),
             ]
         )
     }
@@ -34,7 +37,9 @@ export default class App{
         this.outputView.printSystemMessage('start')
 
         const tokens = Token.tokenize(main)
+        // console.log(tokens)
         const parsedAst = new AstParser(tokens, this.keywords).parse()
+        // console.log(parsedAst)
         const envsController = new EnvsController()
         new Run(envsController).run(parsedAst)
 

@@ -52,6 +52,12 @@ export default class EnvsController {
         return env.value
     }
 
+    getEventByName(name){
+        const [env,scope] = this.findEnvByName(name)
+
+        if (!env) throw `${name} is not defined`
+        return env.event
+    }
     getParamsByName(name) {
         const [env,scope] = this.findEnvByName(name)
 
@@ -59,7 +65,7 @@ export default class EnvsController {
         return env.params
     }
 
-    addEnv(name, type, value, keyword) {
+    addEnv(name, type, value, keyword,event) {
 
         // let currentScopeEnv= this.peek().findLast(env=>env.name===name)
         let [env,scope]=this.findEnvByName(name)
@@ -70,18 +76,18 @@ export default class EnvsController {
                 if (env.type === 'const') throw `can't not changed const variable "${name}"`
                 if (type) throw `already defined  variable "${name}"`
                 console.log(`[SYSTEM] changed Variable ${env.name} ${env.value}->${value}`)
-                return this.peek().push(new Env(name, value, type, keyword))
+                return this.peek().push(new Env(name, value, type, keyword,event))
             }
             if(scope!==currentScope && !type){
                 if (env.type === 'const') throw `can't not changed const variable "${name}"`
                 console.log(`[SYSTEM] changed Variable ${env.name} ${env.value}->${value}`)
-                return this.#envs[scope].push(new Env(name, value, type, keyword))
+                return this.#envs[scope].push(new Env(name, value, type, keyword,event))
             }
         }
         if (!type) {
             throw `${name} is not defined`
         }
-        this.peek().push(new Env(name, value, type, keyword))
+        this.peek().push(new Env(name, value, type, keyword,event))
     }
 
 

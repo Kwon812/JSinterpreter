@@ -1,10 +1,12 @@
+import {EventLoop} from "../test.js";
+
 export default class Run {
 
     #envs
-    #callStack
-
+    #eventLoop
     constructor(envs) {
         this.#envs = envs;
+        this.#eventLoop=new EventLoop()
     }
 
 
@@ -13,64 +15,73 @@ export default class Run {
 
             case 'Redefine':
             case 'Variable':
-                this.#envs.addEnv(node.name, node.t, this.eval(node.value))
+
+                this.#eventLoop.call(()=>this.#envs.addEnv(node.name, node.t, this.eval(node.value)))
                 break;
 
             case 'Print':
-                console.log(this.eval(node.expression))
+                this.#eventLoop.call(()=>console.log(this.eval(node.expression)))
                 break;
 
             case 'Fun':
-                this.#envs.addEnv(node.name, node.t, node.body, node.params)
+                this.#eventLoop.call(()=>this.#envs.addEnv(node.name, node.t, node.body, node.params,node.event))
                 break;
 
             case 'If':
-                if (this.eval(node.expression)) {
-                    this.eval(node.run)
-                }
+                this.#eventLoop.call(() => {
+                    if (this.eval(node.expression)) {
+                        this.eval(node.run);
+                    }
+                });
                 break;
             case 'For':
-                let count=0
-                while(count++<node.count){
-                    // console.log("dnjwe")
-                    node.body.forEach(nd=>{
-                        this.eval(nd)
-                    })
-                }
+                this.#eventLoop.call(() => {
+                    let count = 0
+                    while (count++ < node.count) {
+                        node.body.forEach(nd => this.eval(nd))
+                    }
+                })
                 break;
             case 'From':
-                let start=node.start
-                const end=node.end
-                const param=node.param
-                this.#envs.pushEnvsScope()
+                this.#eventLoop.call(()=> {
+                    let start = node.start
+                    const end = node.end
+                    const param = node.param
+                    this.#envs.pushEnvsScope()
 
-                this.#envs.addEnv(param,'let',start)
-                for(start;start<=end;start++){
-                    this.#envs.addEnv(param,null,start)
-                    node.body.forEach(nd=>{
-                        this.eval(nd)
-                    })
-                    start=this.#envs.getValueByName(param)
-                }
+                    this.#envs.addEnv(param, 'let', start)
+                    for (start; start <= end; start++) {
+                        this.#envs.addEnv(param, null, start)
+                        node.body.forEach(nd => {
+                            this.eval(nd)
+                        })
+                        start = this.#envs.getValueByName(param)
+                    }
 
 
-
-                this.#envs.popEnvsScope()
+                    this.#envs.popEnvsScope()
+                })
                 break;
             case 'FunExecute':
+                // console.log(node)
+                const event = this.#envs.getEventByName(node.value.name)
                 const body = this.eval(node.value)
-                // console.log(body)
-                this.#envs.pushEnvsScope()
-                const params = this.#envs.getParamsByName(node.value.name)
-                params.forEach((param, i) => {
-                    this.#envs.addEnv(param, 'const', node.params[i],)
-                })
-                this.#envs.getAll()
-                body.forEach(nd => {
+                const callback=()=>{
 
-                    this.eval(nd)
-                })
-                this.#envs.popEnvsScope()
+
+                    this.#envs.pushEnvsScope()
+                    const params = this.#envs.getParamsByName(node.value.name)
+                    params.forEach((param, i) => {
+                        this.#envs.addEnv(param, 'const', node.params[i],)
+                    })
+                    body.forEach(nd => {
+                        this.eval(nd)
+                    })
+                    this.#envs.popEnvsScope()
+                }
+                this.#eventLoop.init([event,callback])
+
+                // this.#eventLoop.run()
                 break;
 
             case 'Identifier':
@@ -110,9 +121,11 @@ export default class Run {
     }
 
     run(ast) {
-        for (const node of ast) {
-            this.eval(node);
-        }
+        ast.forEach(node=> {
+            this.eval(node)
+            this.#eventLoop.run()
+        })
+
         // this.#envs.getAll()
         // console.log(this.#env)
     }

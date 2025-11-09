@@ -1,10 +1,15 @@
 
 
 
+call func a(){
+    print "AELLO"
 
 
+}
+micro func b(){
+    a()
+    print "BELLO"
+}
 
-
-
-let a=10
-if 2+4 > 3 print "eh"
+b()
+print "EWd"

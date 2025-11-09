@@ -48,7 +48,8 @@ export default class AstParser {
                 expression
             }
         }
-        if (this.#keywords.isValidKeyword('Fun', token)) {
+        if (this.#keywords.isValidKeyword('Fun', this.#tokens[this.#pos+1])) {
+            this.#pos++
             const name=this.#tokens[++this.#pos]
             const params=this.#parseParams()
             const body=this.#parseBlock()
@@ -57,6 +58,7 @@ export default class AstParser {
             return {
                 type: 'Fun',
                 t:'fun',
+                event:token,
                 // name:name.replace('()',''),
                 name,
                 params,
@@ -88,6 +90,9 @@ export default class AstParser {
         }
 
         if (/^\(.*|[\w,]+\)$/.test(this.#tokens[this.#pos + 1] )) {
+
+            const event=this.#tokens[this.#pos]
+            // this.#pos++
             // console.log("ajs")
             const name=this.#tokens[this.#pos]
 
