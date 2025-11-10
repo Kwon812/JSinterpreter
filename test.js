@@ -6,16 +6,29 @@ class Queue {
         this.#queue = queue;
     }
 
-    isEmpty() {
-        return this.#queue.length === 0;
+    front() {
+        return this.#queue[0]
     }
 
+    isEmpty() {
+        return this.#queue[0].length === 0 || this.#queue.length === 0
+    }
+
+    enScope() {
+        this.#queue.push([])
+    }
+
+    deScope() {
+        this.#queue.shift()
+    }
+
+// [[],[],[] ]
     enqueue(data) {
-        this.#queue.push(data)
+        this.#queue[this.#queue.length - 1].push(data)
     }
 
     dequeue() {
-        return this.#queue.shift()
+        return this.#queue[0].shift()
     }
 
     get() {
@@ -31,16 +44,29 @@ class Stack {
         this.#stack = stack;
     }
 
+
+    peek() {
+        return this.#stack[this.#stack.length - 1]
+    }
+
     isEmpty() {
-        return this.#stack.length === 0;
+        return this.peek().length === 0
+    }
+
+    pushScope() {
+        this.#stack.push([])
+    }
+
+    popScope() {
+        this.#stack.pop()
     }
 
     push(data) {
-        this.#stack.push(data);
+        this.#stack[this.#stack.length - 1].push(data);
     }
 
     pop() {
-        return this.#stack.pop()
+        return this.#stack[this.#stack.length - 1].pop()
     }
 
     get() {
@@ -70,10 +96,10 @@ class CallStack extends Stack {
     }
 }
 
-
-const microTaskQueue = new MicroTaskQueue([])
-const taskQueue = new TaskQueue([])
-const callStack = new CallStack([])
+//
+// const microTaskQueue = new MicroTaskQueue([])
+// const taskQueue = new TaskQueue([])
+// const callStack = new CallStack([])
 
 
 export class EventLoop {
@@ -82,22 +108,49 @@ export class EventLoop {
     #taskQueue
 
     constructor(callStack, microTaskQueue, taskQueue) {
-        this.#microTaskQueue = new MicroTaskQueue([])
-        this.#taskQueue = new TaskQueue([])
-        this.#callStack = new CallStack([])
+        this.#callStack = new CallStack([[]])
+        this.#microTaskQueue = new MicroTaskQueue([[]])
+        this.#taskQueue = new TaskQueue([[]])
+
     }
-    call(callback){
+
+    call(callback) {
         this.#callStack.push(callback)
+        this.run()
     }
+
+    pushScope(type) {
+        if (type === 'micro') this.#microTaskQueue.enScope()
+        if (type === 'task') this.#taskQueue.enScope()
+        else this.#callStack.pushScope()
+
+    }
+
+    popScope(type) {
+        if (type === 'micro') this.#microTaskQueue.deScope()
+        if (type === 'task') this.#taskQueue.deScope()
+        else this.#callStack.popScope()
+    }
+
+    getStack() {
+        this.#callStack.get()
+    }
+
     init([i, callbackBody]) {
         switch (i) {
             case 'call':
+                this.#callStack.pushScope()
                 this.#callStack.push(callbackBody)
+
+                // this.#callStack.get()
                 break;
             case 'micro':
+                this.#microTaskQueue.enScope()
                 this.#microTaskQueue.enqueue(callbackBody)
+
                 break;
             case 'task':
+                // this.#taskQueue.enScope()
                 this.#taskQueue.enqueue(callbackBody)
                 break;
 
@@ -105,23 +158,28 @@ export class EventLoop {
     }
 
     run() {
-            // setTimeout(()=>{},400)
-            while (!this.#callStack.isEmpty()) {
-                const fn = this.#callStack.pop();
-                fn();
-            }
+        this.#callStack.get()
+        this.#microTaskQueue.get()
+        while (!this.#callStack.isEmpty()) {
 
-            // 2️⃣ 그다음 마이크로태스크 실행
-            while (!this.#microTaskQueue.isEmpty()) {
-                const fn = this.#microTaskQueue.dequeue();
-                fn();
-            }
+            const fn = this.#callStack.pop();
 
-            // 3️⃣ 마지막으로 태스크 실행
-            while (!this.#taskQueue.isEmpty()) {
-                const fn = this.#taskQueue.dequeue();
-                fn();
-            }
+            fn();
+        }
+        this.#microTaskQueue.get()
+        this.#callStack.popScope()
+        this.#microTaskQueue.get()
+        console.log(this.#microTaskQueue.isEmpty())
+        while (!this.#microTaskQueue.isEmpty()) {
+            const fn = this.#microTaskQueue.dequeue();
+            console.log(fn)
+            fn();
+        }
+        this.#microTaskQueue.deScope()
+        while (!this.#taskQueue.isEmpty()) {
+            const fn = this.#taskQueue.dequeue();
+            fn();
+        }
 
     }
 

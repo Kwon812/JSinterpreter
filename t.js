@@ -1,5 +1,5 @@
 
 
-const a=[1,2,3,4,5]
+const a=[]
 
-console.log(a.shift())
+console.log(a.length)

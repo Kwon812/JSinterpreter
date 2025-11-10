@@ -4,9 +4,10 @@ export default class Run {
 
     #envs
     #eventLoop
+
     constructor(envs) {
         this.#envs = envs;
-        this.#eventLoop=new EventLoop()
+        this.#eventLoop = new EventLoop()
     }
 
 
@@ -16,34 +17,27 @@ export default class Run {
             case 'Redefine':
             case 'Variable':
 
-                this.#eventLoop.call(()=>this.#envs.addEnv(node.name, node.t, this.eval(node.value)))
+                this.#envs.addEnv(node.name, node.t, this.eval(node.value))
                 break;
 
             case 'Print':
-                this.#eventLoop.call(()=>console.log(this.eval(node.expression)))
+                console.log(this.eval(node.expression))
                 break;
 
-            case 'Fun':
-                this.#eventLoop.call(()=>this.#envs.addEnv(node.name, node.t, node.body, node.params,node.event))
-                break;
 
             case 'If':
-                this.#eventLoop.call(() => {
-                    if (this.eval(node.expression)) {
-                        this.eval(node.run);
-                    }
-                });
+
+                if (this.eval(node.expression)) {
+                    this.eval(node.run);
+                }
                 break;
             case 'For':
-                this.#eventLoop.call(() => {
                     let count = 0
                     while (count++ < node.count) {
                         node.body.forEach(nd => this.eval(nd))
                     }
-                })
                 break;
             case 'From':
-                this.#eventLoop.call(()=> {
                     let start = node.start
                     const end = node.end
                     const param = node.param
@@ -60,28 +54,37 @@ export default class Run {
 
 
                     this.#envs.popEnvsScope()
-                })
                 break;
             case 'FunExecute':
                 // console.log(node)
                 const event = this.#envs.getEventByName(node.value.name)
                 const body = this.eval(node.value)
-                const callback=()=>{
+                const callback = () => {
 
+
+                    // this.#eventLoop.pushScope('call')
 
                     this.#envs.pushEnvsScope()
                     const params = this.#envs.getParamsByName(node.value.name)
+
                     params.forEach((param, i) => {
                         this.#envs.addEnv(param, 'const', node.params[i],)
                     })
                     body.forEach(nd => {
                         this.eval(nd)
                     })
-                    this.#envs.popEnvsScope()
-                }
-                this.#eventLoop.init([event,callback])
 
-                // this.#eventLoop.run()
+                    // console.log("dwenjs")
+                    // this.#eventLoop.getStack()
+                    this.#envs.popEnvsScope()
+                    // this.#eventLoop.popScope('call')
+                }
+                this.#eventLoop.init([event, callback])
+
+                break;
+
+            case 'Fun':
+                this.#envs.addEnv(node.name, node.t, node.body, node.params, node.event)
                 break;
 
             case 'Identifier':
@@ -110,24 +113,28 @@ export default class Run {
                     case '>':
                         return left > right
                     case '*':
-                        return left*right
+                        return left * right
                     case '/':
-                        return left/right
+                        return left / right
                     case '%':
-                        return left %right
+                        return left % right
                 }
         }
 
     }
 
     run(ast) {
-        ast.forEach(node=> {
-            this.eval(node)
-            this.#eventLoop.run()
-        })
 
-        // this.#envs.getAll()
-        // console.log(this.#env)
+        ast.forEach(node => {
+            // console.log(node)
+            // this.#eventLoop.pushScope('call')
+            this.eval(node)
+
+
+
+            // console.log(node)
+        })
+        this.#eventLoop.run()
     }
 
 }

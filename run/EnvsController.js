@@ -53,6 +53,7 @@ export default class EnvsController {
     }
 
     getEventByName(name){
+        // console.log(this.#envs)
         const [env,scope] = this.findEnvByName(name)
 
         if (!env) throw `${name} is not defined`
@@ -67,6 +68,7 @@ export default class EnvsController {
 
     addEnv(name, type, value, keyword,event) {
 
+        // console.log('add')
         // let currentScopeEnv= this.peek().findLast(env=>env.name===name)
         let [env,scope]=this.findEnvByName(name)
         const currentScope=this.#envs.length-1
@@ -88,6 +90,7 @@ export default class EnvsController {
             throw `${name} is not defined`
         }
         this.peek().push(new Env(name, value, type, keyword,event))
+        // console.log(this.#envs)
     }
 
 

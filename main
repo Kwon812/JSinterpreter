@@ -1,15 +1,9 @@
 
-
-
-call func a(){
-    print "AELLO"
-
-
-}
-micro func b(){
-    a()
-    print "BELLO"
+micro func b(l){
+   print "DWenjs"
 }
 
-b()
-print "EWd"
+b(10)
+let a="32138"
+
+print a
