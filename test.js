@@ -1,3 +1,5 @@
+import OutputView from "./OutputView.js";
+
 class Queue {
 
     #queue
@@ -11,7 +13,7 @@ class Queue {
     }
 
     isEmpty() {
-        return this.#queue[0].length === 0 || this.#queue.length === 0
+        return this.#queue.length === 0 || this.#queue[0].length === 0
     }
 
     enScope() {
@@ -45,33 +47,21 @@ class Stack {
     }
 
 
-    peek() {
-        return this.#stack[this.#stack.length - 1]
-    }
 
     isEmpty() {
-        return this.peek().length === 0
+        return this.#stack.length === 0
     }
 
-    pushScope() {
-        this.#stack.push([])
-    }
 
-    popScope() {
-        this.#stack.pop()
-    }
 
     push(data) {
-        this.#stack[this.#stack.length - 1].push(data);
+        this.#stack.push(data);
     }
 
     pop() {
-        return this.#stack[this.#stack.length - 1].pop()
+        return this.#stack.pop()
     }
 
-    get() {
-        console.log(this.#stack)
-    }
 }
 
 
@@ -106,93 +96,69 @@ export class EventLoop {
     #callStack
     #microTaskQueue
     #taskQueue
-
+    arr=[]
     constructor(callStack, microTaskQueue, taskQueue) {
-        this.#callStack = new CallStack([[]])
+        this.#callStack = new CallStack([])
         this.#microTaskQueue = new MicroTaskQueue([[]])
         this.#taskQueue = new TaskQueue([[]])
 
     }
 
-    call(callback) {
-        this.#callStack.push(callback)
-        this.run()
-    }
 
-    pushScope(type) {
-        if (type === 'micro') this.#microTaskQueue.enScope()
-        if (type === 'task') this.#taskQueue.enScope()
-        else this.#callStack.pushScope()
 
-    }
+    init(i, frame,name) {
 
-    popScope(type) {
-        if (type === 'micro') this.#microTaskQueue.deScope()
-        if (type === 'task') this.#taskQueue.deScope()
-        else this.#callStack.popScope()
-    }
-
-    getStack() {
-        this.#callStack.get()
-    }
-
-    init([i, callbackBody]) {
         switch (i) {
             case 'call':
-                this.#callStack.pushScope()
-                this.#callStack.push(callbackBody)
-
-                // this.#callStack.get()
+                this.#callStack.push(frame)
                 break;
             case 'micro':
-                this.#microTaskQueue.enScope()
-                this.#microTaskQueue.enqueue(callbackBody)
-
+                this.#microTaskQueue.enqueue(frame)
                 break;
             case 'task':
-                // this.#taskQueue.enScope()
-                this.#taskQueue.enqueue(callbackBody)
+                this.#taskQueue.enqueue(frame)
                 break;
-
         }
+    }
+
+
+    start() {
+        const startTime = Date.now()
+        const tick = () => {
+            if(Date.now() - startTime > 500) {
+                return
+            }
+            this.run()
+            setTimeout(tick, 0)
+        }
+        tick()
     }
 
     run() {
-        this.#callStack.get()
-        this.#microTaskQueue.get()
-        while (!this.#callStack.isEmpty()) {
 
-            const fn = this.#callStack.pop();
-
-            fn();
+        if(!this.#callStack.isEmpty()){
+            const {env,callback}=this.#callStack.pop()
+            console.log(env)
+            env.pushEnvsScope()
+            callback()
+            env.popEnvsScope()
+            return
         }
-        this.#microTaskQueue.get()
-        this.#callStack.popScope()
-        this.#microTaskQueue.get()
-        console.log(this.#microTaskQueue.isEmpty())
-        while (!this.#microTaskQueue.isEmpty()) {
-            const fn = this.#microTaskQueue.dequeue();
-            console.log(fn)
-            fn();
-        }
-        this.#microTaskQueue.deScope()
-        while (!this.#taskQueue.isEmpty()) {
-            const fn = this.#taskQueue.dequeue();
-            fn();
+        if(!this.#microTaskQueue.isEmpty()){
+            const {env,callback}= this.#microTaskQueue.dequeue();
+            env.pushEnvsScope()
+            callback()
+            env.popEnvsScope()
+            return
         }
 
+
+        if (!this.#taskQueue.isEmpty()) {
+            const {env,callback}= this.#taskQueue.dequeue();
+            env.pushEnvsScope()
+            callback()
+            env.popEnvsScope()
+        }
     }
 
 }
-
-//
-// const event=new EventLoop(callStack,microTaskQueue,taskQueue)
-// event.init(['C','첫번째'])
-// event.init(['C','두번째'])
-// event.init(['B','첫번째'])
-// event.init(['B','두번째'])
-// event.init(['A','첫번쨰'])
-// event.init(['A','두번쨰'])
-//
-//
-// event.run()

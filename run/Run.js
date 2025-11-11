@@ -22,6 +22,9 @@ export default class Run {
 
             case 'Print':
                 console.log(this.eval(node.expression))
+
+                // this.#eventLoop.run()
+
                 break;
 
 
@@ -57,14 +60,17 @@ export default class Run {
                 break;
             case 'FunExecute':
                 // console.log(node)
+                // this.#eventLoop.run()
                 const event = this.#envs.getEventByName(node.value.name)
                 const body = this.eval(node.value)
+                // console.log(event,body)
+                const env=this.#envs
                 const callback = () => {
 
 
                     // this.#eventLoop.pushScope('call')
 
-                    this.#envs.pushEnvsScope()
+                    // this.#envs.pushEnvsScope()
                     const params = this.#envs.getParamsByName(node.value.name)
 
                     params.forEach((param, i) => {
@@ -74,13 +80,8 @@ export default class Run {
                         this.eval(nd)
                     })
 
-                    // console.log("dwenjs")
-                    // this.#eventLoop.getStack()
-                    this.#envs.popEnvsScope()
-                    // this.#eventLoop.popScope('call')
                 }
-                this.#eventLoop.init([event, callback])
-
+                this.#eventLoop.init(event,{env, callback},node.value.name)
                 break;
 
             case 'Fun':
@@ -126,15 +127,13 @@ export default class Run {
     run(ast) {
 
         ast.forEach(node => {
-            // console.log(node)
-            // this.#eventLoop.pushScope('call')
             this.eval(node)
-
-
-
-            // console.log(node)
         })
-        this.#eventLoop.run()
     }
+
+    startEventLoop(){
+        this.#eventLoop.start()
+    }
+
 
 }

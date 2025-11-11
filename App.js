@@ -41,9 +41,15 @@ export default class App{
         const parsedAst = new AstParser(tokens, this.keywords).parse()
         // console.log(parsedAst)
         const envsController = new EnvsController()
-        new Run(envsController).run(parsedAst)
+        const run=new Run(envsController)
+        run.startEventLoop()
+        run.run(parsedAst)
 
-        this.outputView.printSystemMessage('end')
+        // run.runEventLoop()
+        // runner.#eventLoop.runCallStack()
+        setTimeout(()=> {
+            this.outputView.printSystemMessage('end')
+        },500)
 
     }
 }

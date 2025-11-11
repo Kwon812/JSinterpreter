@@ -1,9 +1,20 @@
 
-micro func b(l){
-   print "DWenjs"
+
+let b=20
+call func a(k){
+    print b
+}
+task func g(){
+    print "TASK"
+}
+micro func t(){
+
+    b=10
+    g()
+    print "micro"
+    print b
 }
 
-b(10)
-let a="32138"
-
-print a
+t()
+a(10)
+print b

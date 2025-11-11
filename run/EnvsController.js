@@ -43,11 +43,12 @@ export default class EnvsController {
 
 
     getAll(){
-        return this.#envs
+        return this.#envs.map(env=>env.map(e=>e.name))
     }
     getValueByName(name) {
         const [env,scope] = this.findEnvByName(name)
 
+        // console.log(env)
         if (!env) throw `${name} is not defined`
         return env.value
     }
