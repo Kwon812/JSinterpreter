@@ -38,4 +38,12 @@ export default class Env{
         return this.#params
     }
 
+    getVariable(){
+        return {
+            type:this.type,
+            name:this.name,
+            value:this.value
+
+        }
+    }
 }

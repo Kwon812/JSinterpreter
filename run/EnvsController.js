@@ -3,12 +3,11 @@ import Env from "./Env.js";
 
 export default class EnvsController {
 
-    #envs = [[]]
+    #envs=[[]]
 
-    constructor() {
+    constructor(envs) {
+        // this.#envs = envs;
     }
-
-
 
 
     peek(){
@@ -20,10 +19,7 @@ export default class EnvsController {
     popEnvsScope(){
         this.#envs.pop()
     }
-    // addEnv(name,value){
-    //
-    //     this.peek().push(new Env(name,value))
-    // }
+
     findEnvByName(name){
 
         let a

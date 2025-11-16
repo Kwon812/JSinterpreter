@@ -2,13 +2,16 @@
 
 let b=20
 call func a(k){
+    print "this is first"
     print b
 }
 task func g(){
+    print "this is third"
+    print b
     print "TASK"
 }
 micro func t(){
-
+    print "this is second"
     b=10
     g()
     print "micro"
@@ -16,5 +19,3 @@ micro func t(){
 }
 
 t()
-a(10)
-print b

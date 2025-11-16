@@ -6,6 +6,7 @@ import Token from "./ast/Token.js";
 import AstParser from "./ast/AstParser.js";
 import EnvsController from "./run/EnvsController.js";
 import Run from "./run/Run.js";
+import EventLoop from "./eventLoop/EventLoop.js";
 
 
 export default class App{
@@ -37,16 +38,16 @@ export default class App{
         this.outputView.printSystemMessage('start')
 
         const tokens = Token.tokenize(main)
-        // console.log(tokens)
         const parsedAst = new AstParser(tokens, this.keywords).parse()
-        // console.log(parsedAst)
+
         const envsController = new EnvsController()
-        const run=new Run(envsController)
+        const eventLoop=new EventLoop()
+        const run=new Run(envsController,eventLoop)
+
         run.startEventLoop()
         run.run(parsedAst)
 
-        // run.runEventLoop()
-        // runner.#eventLoop.runCallStack()
+
         setTimeout(()=> {
             this.outputView.printSystemMessage('end')
         },500)
