@@ -11,11 +11,15 @@ export default class Queue {
     }
 
     enqueue(data) {
-        this.#queue[this.#queue.length - 1].push(data)
+        this.#queue.push(data)
     }
 
     dequeue() {
-        return this.#queue[0].shift()
+        return this.#queue.shift()
+    }
+
+    get queue(){
+        return this.#queue
     }
 
 }

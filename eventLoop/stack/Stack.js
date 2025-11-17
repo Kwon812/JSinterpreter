@@ -21,6 +21,9 @@ export default class Stack {
     pop() {
         return this.#stack.pop()
     }
+    get stack(){
+        return this.#stack
+    }
 
 }
 

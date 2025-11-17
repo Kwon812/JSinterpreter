@@ -25,7 +25,7 @@
 3. 함수 구현 (func)
 4. 출력 구현 (print)
 5. 반복문 구현 (for to , while)
-6. 변수 스코프 구현( EnvsController )
+6. 변수 스코프 구현( EnvsService )
 7. 틱 기반 이벤트 루프 구현
 ## 설계
 1. 문자열 입력
@@ -44,7 +44,7 @@
 4. 실행
    - Env class
      - 변수 상태 관리 ( 이름, 키워드, ...)
-   - EnvsController class
+   - EnvsService class
      - 변수 스코프 관리-> 스택구조 ->지역,전역 변수 관리
    - Evaluator class
      - 파싱된 ast를 실행하는 클래스 

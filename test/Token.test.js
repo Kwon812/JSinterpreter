@@ -1,4 +1,4 @@
-import Token from "./Token.js";
+import Token from "../ast/token/Token.js";
 
 
 describe('Token class test',()=>{

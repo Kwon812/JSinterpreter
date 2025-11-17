@@ -1,6 +1,6 @@
-import CallStack from "./CallStack.js";
-import MicroTaskQueue from "./MicroTaskQueue.js";
-import TaskQueue from "./TaskQueue.js";
+import CallStack from "./stack/CallStack.js";
+import MicroTaskQueue from "./queue/MicroTaskQueue.js";
+import TaskQueue from "./queue/TaskQueue.js";
 
 export default  class EventLoop {
     #callStack
@@ -8,12 +8,19 @@ export default  class EventLoop {
     #taskQueue
     constructor(callStack, microTaskQueue, taskQueue) {
         this.#callStack = new CallStack([])
-        this.#microTaskQueue = new MicroTaskQueue([[]])
-        this.#taskQueue = new TaskQueue([[]])
+        this.#microTaskQueue = new MicroTaskQueue([])
+        this.#taskQueue = new TaskQueue([])
 
     }
 
 
+    getState(){
+        return {
+            callStack: this.#callStack.stack,
+            microTaskQueue: this.#microTaskQueue.queue,
+            taskQueue: this.#taskQueue.queue,
+        }
+    }
 
     init(i, frame,name) {
 

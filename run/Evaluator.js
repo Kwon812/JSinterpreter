@@ -24,8 +24,6 @@ export default class Evaluator {
             case 'Print':
                 console.log(this.eval(node.expression))
 
-                // this.#eventLoop.run()
-
                 break;
 
 
@@ -60,8 +58,6 @@ export default class Evaluator {
                 this.#envs.popEnvsScope()
                 break;
             case 'FunExecute':
-                // console.log(node)
-                // this.#eventLoop.run()
                 const event = this.#envs.getEventByName(node.value.name)
                 const body = this.eval(node.value)
                 // console.log(event,body)
@@ -69,9 +65,6 @@ export default class Evaluator {
                 const callback = () => {
 
 
-                    // this.#eventLoop.pushScope('call')
-
-                    // this.#envs.pushEnvsScope()
                     const params = this.#envs.getParamsByName(node.value.name)
 
                     params.forEach((param, i) => {

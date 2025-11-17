@@ -1,6 +1,6 @@
-import AstParser from "./AstParser.js";
-import Token from "./Token.js";
-import Keywords from "../keyword/Keywords.js";
+import AstParser from "../ast/AstParser.js";
+import Token from "../ast/token/Token.js";
+import KeywordStore from "../keyword/KeywordStore.js";
 import Keyword from "../keyword/Keyword.js";
 
 
@@ -19,7 +19,7 @@ describe('AstParser test', () => {
         '=',     '20',
         'print', '10'
     ]
-    const keywords=new Keywords(
+    const keywords=new KeywordStore(
         [new Keyword('Variable', 'let'),
             new Keyword('Variable', 'const'),
             new Keyword('Print', 'print'),

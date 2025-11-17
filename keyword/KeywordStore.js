@@ -1,7 +1,7 @@
 
 
 
-export default class Keywords {
+export default class KeywordStore {
 
     #keywords=[]
     constructor(keywords) {

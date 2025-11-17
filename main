@@ -2,13 +2,15 @@
 
 let b=20
 call func a(k){
+    let b=30
     print "this is first"
+    print "this is call b"
     print b
 }
 task func g(){
+    let b=40
     print "this is third"
     print b
-    print "TASK"
 }
 micro func t(){
     print "this is second"
@@ -17,5 +19,15 @@ micro func t(){
     print "micro"
     print b
 }
-
 t()
+a(30)
+print "this is main b"
+print b
+
+while (3) {
+    print "ewn"
+}
+from 3 to 5 i {
+    print i
+}
+

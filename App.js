@@ -1,10 +1,10 @@
 import OutputView from "./OutputView.js";
-import Keywords from "./keyword/Keywords.js";
+import KeywordStore from "./keyword/KeywordStore.js";
 import Keyword from "./keyword/Keyword.js";
 import fs from "node:fs";
-import Token from "./ast/Token.js";
+import Token from "./ast/token/Token.js";
 import AstParser from "./ast/AstParser.js";
-import EnvsController from "./run/EnvsController.js";
+import EnvsService from "./envs/EnvsService.js";
 import Run from "./run/Run.js";
 import EventLoop from "./eventLoop/EventLoop.js";
 
@@ -13,7 +13,7 @@ export default class App{
 
     constructor() {
         this.outputView = new OutputView();
-        this.keywords = new Keywords(
+        this.keywords = new KeywordStore(
             [new Keyword('Variable', 'let'),
                 new Keyword('Variable', 'const'),
                 new Keyword('Print', 'print'),
@@ -40,7 +40,7 @@ export default class App{
         const tokens = Token.tokenize(main)
         const parsedAst = new AstParser(tokens, this.keywords).parse()
 
-        const envsController = new EnvsController()
+        const envsController = new EnvsService()
         const eventLoop=new EventLoop()
         const run=new Run(envsController,eventLoop)
 

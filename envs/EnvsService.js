@@ -1,7 +1,7 @@
 import Env from "./Env.js";
 
 
-export default class EnvsController {
+export default class EnvsService {
 
     #envs=[[]]
 
@@ -9,6 +9,9 @@ export default class EnvsController {
         // this.#envs = envs;
     }
 
+    envsSize(){
+        return this.#envs.length;
+    }
 
     peek(){
         return this.#envs[this.#envs.length-1]

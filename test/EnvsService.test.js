@@ -1,7 +1,7 @@
-import Env from "./Env.js";
-import EnvsController from "./EnvsController.js";
+import Env from "../envs/Env.js";
+import EnvsService from "../envs/EnvsService.js";
 
-describe('EnvsController test', () => {
+describe('EnvsService test', () => {
 
     let env;
     let envsController;
@@ -9,7 +9,7 @@ describe('EnvsController test', () => {
 
     beforeEach(() => {
         env = new Env('a','10','let')
-        envsController = new EnvsController()
+        envsController = new EnvsService()
 
         logSpy = jest.spyOn(console, 'log')
     })
@@ -18,6 +18,10 @@ describe('EnvsController test', () => {
         logSpy.mockRestore()
     })
 
+    test('push new envs Scope test',()=>{
+        envsController.pushEnvsScope()
+        expect(envsController.envsSize()).toBe(2)
+    })
     test('find Env test',()=>{
         // envsController.findEnvByName = jest.fn(() => [env, 0])
         envsController.addEnv('a','let','10')
