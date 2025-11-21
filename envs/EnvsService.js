@@ -6,7 +6,6 @@ export default class EnvsService {
     #envs=[[]]
 
     constructor(envs) {
-        // this.#envs = envs;
     }
 
     envsSize(){
@@ -47,13 +46,11 @@ export default class EnvsService {
     getValueByName(name) {
         const [env,scope] = this.findEnvByName(name)
 
-        // console.log(env)
         if (!env) throw `${name} is not defined`
         return env.value
     }
 
     getEventByName(name){
-        // console.log(this.#envs)
         const [env,scope] = this.findEnvByName(name)
 
         if (!env) throw `${name} is not defined`
@@ -68,8 +65,6 @@ export default class EnvsService {
 
     addEnv(name, type, value, keyword,event) {
 
-        // console.log('add')
-        // let currentScopeEnv= this.peek().findLast(env=>env.name===name)
         let [env,scope]=this.findEnvByName(name)
         const currentScope=this.#envs.length-1
 
@@ -90,7 +85,6 @@ export default class EnvsService {
             throw `${name} is not defined`
         }
         this.peek().push(new Env(name, value, type, keyword,event))
-        // console.log(this.#envs)
     }
 
 

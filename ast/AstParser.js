@@ -20,10 +20,6 @@ export default class AstParser {
             const sp = this.#tokens[++this.#pos]
             if (!/[=+]+/.test(sp)) throw `WRONG SP ${sp}`
             const value = this.#parseValue(this.#tokens[++this.#pos])
-            // console.log(value)
-            // const parsed=Parser.parseValue(this.#pos,this.#tokens)
-            // console.log(value.cursor,value.contents)
-            // this.#pos =parsed.cursor
             return {
                 type: 'Variable',
                 name,
@@ -53,24 +49,18 @@ export default class AstParser {
             const name=this.#tokens[++this.#pos]
             const params=this.#parseParams()
             const body=this.#parseBlock()
-            // const [params,body] = this.#parseFunction()
-            // console.log(expression)
             return {
                 type: 'Fun',
                 t:'fun',
                 event:token,
-                // name:name.replace('()',''),
                 name,
                 params,
                 body
             }
         }
         if(this.#keywords.isValidKeyword('For', token)) {
-            // console.log("dnajwe")
             const count= this.#parseParams()
-            // console.log(count)
             const body=this.#parseBlock()
-            // console.log(count,body)
             return {
                 type: 'For',
                 count,
@@ -92,14 +82,10 @@ export default class AstParser {
         if (/^\(.*|[\w,]+\)$/.test(this.#tokens[this.#pos + 1] )) {
 
             const event=this.#tokens[this.#pos]
-            // this.#pos++
-            // console.log("ajs")
             const name=this.#tokens[this.#pos]
 
             const value=this.#parseValue(name)
-            // console.log('dsaas')
             const params=this.#parseParams()
-            // console.log(params)
             return {
                 type:'FunExecute',
                 params,
@@ -116,7 +102,6 @@ export default class AstParser {
                 name,
                 value
             }
-            // console.log("dnsje")
         }
 
         throw `WRONG KEYWORD ${token}`
@@ -153,17 +138,11 @@ export default class AstParser {
         return {type: 'BinaryExpression', operator, left, right}
     }
 
-    #parseFunction() {
-
-        return [this.#parseParams(),this.#parseBlock()]
-
-    }
     #parseParams(){
         this.#pos++
         const regex=/^\(.*|[\w,]+\)$/
         const form=this.#tokens[this.#pos]
         const filter=form.match(regex)
-        // console.log(filter)
         if(!filter) throw `WRONG FORM ${form}`
         return form.slice(1, form.length - 1).split(',').map(param=>Number(param.trim()) || param.trim())
     }
@@ -183,7 +162,6 @@ export default class AstParser {
     }
     #parseValue(value) {
         if (!value) throw `WRONG VALUE ${value}`
-        //binary edit
         if (/[+\-\<\>\*\%\/]/.test(this.#tokens[this.#pos + 1])) {
             return this.#parseBinary()
         }
@@ -207,7 +185,6 @@ export default class AstParser {
     parse() {
 
         const ast = []
-        // console.log(this.#parseAst())
         while (this.#pos < this.#tokens.length) {
             ast.push(this.#parseAst())
             ++this.#pos

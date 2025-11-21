@@ -34,7 +34,6 @@ describe('EventLoop test', () => {
         let callback=jest.fn(()=>{
             console.log('callStack running')
         })
-        // console.log(callback)
 
         eventLoop.init('call', {env,callback})
         eventLoop.run()

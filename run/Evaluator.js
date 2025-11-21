@@ -60,8 +60,8 @@ export default class Evaluator {
             case 'FunExecute':
                 const event = this.#envs.getEventByName(node.value.name)
                 const body = this.eval(node.value)
-                // console.log(event,body)
                 const env=this.#envs
+
                 const callback = () => {
 
 

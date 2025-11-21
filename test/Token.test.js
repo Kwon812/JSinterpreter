@@ -11,7 +11,6 @@ describe('Token class test',()=>{
             'let a=10' +
             'a+b'
         const result=Token.tokenize(input)
-        // console.log(result)
         expect(result).toEqual(['let','a','=','10','a','+','b'])
 
 

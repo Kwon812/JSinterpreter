@@ -10,7 +10,7 @@ call func a(k){
 task func g(){
     let b=40
     print "this is third"
-    print b
+    print b+20
 }
 micro func t(){
     print "this is second"

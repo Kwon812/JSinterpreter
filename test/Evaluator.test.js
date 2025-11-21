@@ -64,7 +64,6 @@ describe('evaluator test', () => {
 
 
         evaluator.eval(input)
-        // console.log(logSpy.mock)
         expect(logSpy).toHaveBeenCalledWith(10)
     })
 

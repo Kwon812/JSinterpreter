@@ -23,7 +23,6 @@ describe('EnvsService test', () => {
         expect(envsController.envsSize()).toBe(2)
     })
     test('find Env test',()=>{
-        // envsController.findEnvByName = jest.fn(() => [env, 0])
         envsController.addEnv('a','let','10')
         const [env,scope]=envsController.findEnvByName('a')
         expect(env.getVariable()).toEqual({type:'let',name:'a',value:'10'})
@@ -56,14 +55,11 @@ describe('EnvsService test', () => {
     test('variable scope test', () => {
         envsController.findEnvByName = jest.fn(() => [new Env('a', '10', 'let'), 0])
 
-        // push new scope
         envsController.pushEnvsScope()
 
-        // redefine upper var
         envsController.addEnv('a', '', '20')
         expect(logSpy).toHaveBeenLastCalledWith('[SYSTEM] changed Variable a 10->20')
 
-        // define new variable in inner scope
         envsController.addEnv('a', 'let', '30')
         expect(envsController.peek()[0].getVariable())
             .toEqual({ type: 'let', name: 'a', value: '30' })
